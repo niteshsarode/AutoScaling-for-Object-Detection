@@ -23,7 +23,7 @@ def check_queue():
     response_receive = sqs.receive_message(
         QueueUrl=SQS_QUEUE_URL,
         MaxNumberOfMessages = 1,
-        VisibilityTimeout = 15,
+        VisibilityTimeout = 5,
     )
     if 'Messages' in response_receive:
         message = response_receive['Messages']
@@ -79,7 +79,7 @@ def run_object_detection(video_name):
     res = []
     objects = []
     preds = ""
-    p = subprocess.Popen(["./darknet","detector","demo",PATH+"darknet/cfg/coco.data",PATH+"darknet/cfg/yolov3-tiny.cfg",PATH+"darknet/yolov3-tiny.weights","video.h264"],cwd=PATH+'darknet',stdout=subprocess.PIPE, universal_newlines=True)
+    p = subprocess.Popen(["./darknet","detector","demo",PATH+"darknet/cfg/coco.data",PATH+"darknet/cfg/yolov3-tiny.cfg",PATH+"darknet/yolov3-tiny.weights",video_name],cwd=PATH+'darknet',stdout=subprocess.PIPE, universal_newlines=True)
     for stdout_line in iter(p.stdout.readline, ""):
         res.append(stdout_line)
     p.stdout.close()
@@ -99,16 +99,12 @@ def run_object_detection(video_name):
                 o_file.write(","+o)    
     upload_ouput_on_S3(video_name)
     
-# upload_on_s3('darknet/video.h264',INPUT_BUCKET,'video5.h264')
-# upload_on_sqs('video5.h264')
-# while True:
-key, handle = check_queue()
-delete_from_queue(handle)
-if key != None:
-    print(key)
-    get_video_from_s3(key)
-    run_object_detection(key)
-    print("Processed!")
-# stop_self_instance()
-
-# run_object_detection("asdf")
+while True:
+    key, handle = check_queue()
+    delete_from_queue(handle)
+    if key != None:
+        print(key)
+        get_video_from_s3(key)
+        run_object_detection(key)
+        print("Processed!")
+stop_self_instance()

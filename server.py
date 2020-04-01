@@ -24,7 +24,7 @@ def check_sqs_queue():
 	response_receive = client.receive_message(
 		QueueUrl = SQS_QUEUE_URL,
 		MaxNumberOfMessages = 10,
-		VisibilityTimeout = 10,
+		VisibilityTimeout = 5,
 	)
 	if 'Messages' in response_receive:
 		return len(response_receive['Messages'])
@@ -36,6 +36,6 @@ while True:
 	available_instances = get_instances()
 	n = min(n,len(available_instances))
 	if n != 0:
-		time.sleep(15)
+		time.sleep(10)
 		start_instances(available_instances[:n])
-	time.sleep(60)
+	time.sleep(3)
