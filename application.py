@@ -6,8 +6,8 @@ import subprocess
 import json
 import time
 
-ACCESS_KEY = 'AKIAJGHQA4TO7CJIONPQ'
-SECRET_KEY = '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'
+ACCESS_KEY = '####'
+SECRET_KEY = '####'
 INPUT_BUCKET = 'videos-bucket-input'
 OUTPUT_BUCKET = 'videos-bucket-output'
 SQS_QUEUE_URL = 'https://sqs.us-east-1.amazonaws.com/285227251910/input_queue.fifo'
